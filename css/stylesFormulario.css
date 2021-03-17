@@ -1,0 +1,32 @@
+*{
+    padding: 100;
+    margin: 100;
+}
+
+body{
+    align-items: center;
+    background: url("../img/fondo_2.png");
+    background-color: #ccc;
+    color: #333;
+}
+
+.title{
+    font-family: Roboto;
+    font-variant: small-caps;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 96px;
+    line-height: 112px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #fff;
+}
+
+.subtitle{
+    font-variant: small-caps;
+    font-size: 25px;
+
+    color: #fff;
+}
