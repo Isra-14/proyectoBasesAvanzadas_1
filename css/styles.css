@@ -1,0 +1,86 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background: url("../img/fondo_1.jpg");
+    background-color: #ccc;
+    color: #333;
+}
+.title{
+    position: absolute;
+    left: 8%;
+    right: 31.88%;
+    bottom: 20%;
+
+    font-family: Roboto;
+    font-variant: small-caps;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 96px;
+    line-height: 112px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #fff;
+}
+
+.subtitle{
+    position: absolute;
+    font-variant: small-caps;
+    font-size: 25px;
+    left: 8%;
+
+    bottom: 15%;
+
+    color: #fff;
+}
+
+.btnInicioN{
+    position: absolute;
+    margin: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 274px;
+    height: 50px;
+    bottom: 23.75%;
+    left: 72%;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    color: #ccc;
+
+    background-color: rgba(250, 210, 211, 0.06);
+
+    border-radius: 17px;
+}
+
+.btnInicioG{
+    position: absolute;
+    margin: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 272px;
+    height: 50px;
+    bottom: 13.75%;
+    left: 72%;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 36px;
+    color: lawngreen;
+
+    background-color: rgba(250, 210, 211, 0.06);
+
+    border-radius: 17px;
+}
+
+button:hover{
+    background-color: rgba(234, 240, 189, 0.6);
+    color: royalblue;
+}
