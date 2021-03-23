@@ -1,4 +1,5 @@
 let id = 0
+let contPreguntas = 0
 let typePre = ''
 let subPre = ''
 $(document).ready(()=>{
@@ -18,11 +19,11 @@ $(document).ready(()=>{
       
 })
 
-let agregarDatos = (element)=>{
-    console.log('agrega')
-    _tipoPregunta = element.val()
+// let agregarDatos = (element)=>{
+//     console.log('agrega')
+//     _tipoPregunta = element.val()
     
-}              
+// }              
 
 let onChangeTipo = (elemento) =>{
     let seleccionado = elemento.children("option:selected").val();
@@ -51,42 +52,72 @@ let onChangeTipo = (elemento) =>{
     botonAgr.attr('class', 'agregar')
     botonAgr.text('Agregar opcion')
     
+    let botonElim = $('<button></button>')
+    botonElim.attr('id', 'botonElim'+subPre)
+    botonElim.attr('type', 'button')
+    botonElim.attr('class', 'eliminar')
+    botonElim.text('Eliminar Pregunta')
+    
     let opcionesCount = 0
     let formOpciones = $('<form></form>')
     formOpciones.attr('id', 'formOpciones'+subPre)
     
+    
     botonAgr.click(() => {
         opcionesCount++;
         if(opcionesCount <= 5){
+            let contOpcion = $('<div></div>')
+            contOpcion.attr('id', 'contOpcion'+opcionesCount)
+
             let opcion = $('<input></input>')
             opcion.attr('id', 'opcion'+opcionesCount)
             opcion.attr('type', 'text')
+            opcion.on('change', ()=>{
+                respuesta(opcion, contOpcion, subPre)
+            })
+            
+            // let respuesta = $('<input></input>')
+            // respuesta.attr('id', 'respuesta'+opcionesCount)
+            // respuesta.attr('type', 'radio')
+            // respuesta.attr('name', 'opciones'+subPre)
+            // respuesta.text(opcion.val())
     
-            let respuesta = $('<input></input>')
-            respuesta.attr('id', 'respuesta'+opcionesCount)
-            respuesta.attr('type', 'radio')
-            respuesta.attr('name', 'opciones'+subPre)
-            respuesta.text(opcion.val())
-    
-            formOpciones.append(opcion)
-            formOpciones.append(respuesta)
+            contOpcion.append(opcion)
+            formOpciones.append(contOpcion)
+            //formOpciones.append(respuesta)
         }
     });
+
+    botonElim.click(()=>{
+        contPreguntas--
+        botonElim.parent().parent().remove()
+        console.log(contPreguntas)
+        if(contPreguntas!=0)
+            $("#terminar").attr('disabled', false)
+        else
+            $("#terminar").attr('disabled', true)
+        
+    })
+
+    
 
     
     switch(seleccionado){
         case "Abierta":
             labelPregunta.text("Ingresa la pregunta abierta:");                  
+            divPregunta.append(botonElim)
             break;
-            case "OpcMultiple":
-                labelPregunta.text("Ingresa la pregunta de opcion multiple:");
-                divPregunta.append(formOpciones)
+        case "OpcMultiple":
+            labelPregunta.text("Ingresa la pregunta de opcion multiple:");
+            divPregunta.append(formOpciones)
             divPregunta.append(botonAgr)
+            divPregunta.append(botonElim)
             break;
         case "Multi":
             labelPregunta.text("Ingresa la pregunta de seleccion multiple:");
             divPregunta.append(formOpciones)
             divPregunta.append(botonAgr)
+            divPregunta.append(botonElim)
             break;
         default:
             break;
@@ -96,10 +127,32 @@ let onChangeTipo = (elemento) =>{
         
 }
 
+let respuesta=(elemento, elemento2, numPregunta)=>{
+    let idElemento = elemento.attr('id');
+    let subPre = idElemento.substring(6, idElemento.length)
+
+    console.log(subPre)
+    $("#respuesta"+subPre).remove()
+    $("#labRespuesta"+subPre).remove()
+    let respuesta = $('<input></input>')
+    respuesta.attr('id', 'respuesta'+subPre)
+    respuesta.attr('type', 'radio')
+    respuesta.attr('name', 'opciones'+numPregunta)
+    respuesta.attr('value',elemento.val())
+
+    let labResp = $('<label></label>')
+    labResp.attr('for', 'respuesta'+subPre)
+    labResp.attr('id', 'labRespuesta'+subPre)
+    labResp.text(elemento.val())
+
+    elemento2.append(labResp)
+    elemento2.append(respuesta)
+
+}
+
     function newQuestion() {
         id++
-        // $("#preguntas")
-        //     .append("<div id='pregunta"+id+"'><h2>Pregunta "+id+"</h2><select name='tipoPregunta' id='tipoPregunta"+id+"'><option value='Abierta'>Abierta</option><option value='OpcMultiple'>Opcion multiple</option><option value='Multi'>Multiseleccion</option></select></div><br>")
+        contPreguntas++
         
         let divPregunta = $('<div></div>');
         divPregunta.attr('id','pregunta' + id);
@@ -137,46 +190,49 @@ let onChangeTipo = (elemento) =>{
         
         // typePre = $("#tipoPregunta"+id).attr('id')
         // subPre = typePre.substring(12, typePre.length)
+        
         $("#terminar").attr('disabled', false)
-
         //alert(subPre)        
         //agregarDatos($("#tipoPregunta"+id))
         
     }
+    
 
-    // function agregarDatos(params) {
-    //     console.log('agrega')
-    //         _tipoPregunta = element.val()
-    //         switch(_tipoPregunta){
-    //             case "Abierta":
-    //                 $("#pregTxt"+subPre)
-    //                     .remove()
-    //                 $("#pregunta"+subPre)
-    //                     .append("<label for='pregTxt"+id+"'>Ingresa la pregunta:</label><br><input type='text' id='pregTxt"+id+"' required>")                    
-    //                 break;
-    //             case "OpcMultiple":
-    //                 $("#pregTxt"+subPre)
-    //                     .remove()
-    //                 $("#pregunta"+subPre)
-    //                     .append("<label for='pregTxt"+id+"'>Ingresa la pregunta de opcion multiple:</label><br><input type='text' id='pregTxt"+id+"' required>")
-    //                 break;
-    //             case "Multi":
-    //                 $("#pregTxt"+id)
-    //                     .remove()
-    //                 $("#pregunta"+id)
-    //                     .append("<label for='pregTxt"+id+"'>Ingresa la pregunta de multiple seleccion:</label><br><input type='text' id='pregTxt"+id+"' required>")
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    // }
-// $("#newQuestion").click(()=>{            
+function generarJson(){
+    let json = []
+    let nombreSurvey = $("#nombreTxt").val()
+    let descripcionSurvey = $("#descTxt").val()
+    let cantidadPreguntas = contPreguntas
 
-//     id++
-//     $("#preguntas")
-//         .append("<div id='pregunta"+id+"'><h2>Pregunta "+id+"</h2><select name='tipoPregunta' id='tipoPregunta"+id+"'><option value='Abierta'>Abierta</option><option value='OpcMultiple'>Opcion multiple</option><option value='Multi'>Multiseleccion</option></select></div><br>")
-//     typePre = $("#tipoPregunta"+id).attr('id')
-//     subPre = typePre.substring(12, typePre.length)
-//     //alert(subPre)        
-//     agregarDatos($("#tipoPregunta"+id))
-// })
+    if(nombreSurvey != '' && descripcionSurvey != ''){
+        let preguntas = []
+
+        for(let i = 0; i < cantidadPreguntas; i++){
+            let pregunta = $("#pregTxt"+i).val()
+            let tipoPregunta = $("#tipoPregunta"+i).val()
+            let respuestasTotales = 0
+
+            if(pregunta != '' && (tipoPregunta != 'Abierta' || tipoPregunta != 'Multi' || tipoPregunta != 'OpcMultiple')){
+                let respuestasJSON = []
+                if(tipoPregunta == 'Abierta'){
+                    respuestasTotales = 1
+                    respuestasJSON.push({respuesta:"0", opcion_correcta:true})
+                } else {
+
+                }
+            }
+        }
+    }
+}
+
+
+let insertar=(json)=>{
+    fetch('localhost:3000/cuestionario', {
+        method: 'POST',
+        mode: 'cors',
+        body: JSON.stringify(json),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res=>res.json()).catch(error=>console.error(error)).then(res=>console.log('SUCCESS: '+res))
+}
