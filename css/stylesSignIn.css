@@ -119,7 +119,12 @@ button{
     padding: 19px;
     margin-left: 30px;
 }
-
+.eliminarOpc{
+    background-color: red;
+    max-width: 20%;
+    padding: 19px;
+    margin-left: 30px;
+}
 @media screen and (min-width: 480px){
     form {
         max-width: 480px;
