@@ -4,23 +4,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/stylesFormulario.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/stylesSignIn.css">
     <title>Encuestas KI</title>
 </head>
 <body>
-    <br>
     <div>
-        <label for="nombreTxt" class="subtitle">Nombre del cuestionario:</label>
-        <input type="text" id="nombreTxt" style="margin-left: 10px;">
+        <form method="POST" class="container">
+            <h1>Nuevo cuestionario</h1>
+            <br>
+            <div>
+                <label for="nombreTxt" class="">Nombre del cuestionario:</label>
+                <input type="text" id="nombreTxt" required>
+            </div>
+            <br>
+            <div>
+                <label for="descTxt">Agrega una descripcion de tu cuestionario:</label><br>
+                <input type="text" id="descTxt" required>
+            </div>
+            <div class="preguntas" id="preguntas">
+                
+            </div>
+            
+            <br>
+            <button type="button" id="newQuestion" class="newQuestion">Nueva pregunta</button>
+            
+            <button type="submit" id="terminar" disabled>Terminar</button>
+            <a href="index.html"><button type="button" id="btnCancelar" class="cancel">Cancelar</button></a>
+        </form>
     </div>
-    <br>
-    <div>
-        <label for="descTxt" class="subtitle">Agrega una descripcion de tu cuestionario:</label><br>
-        <input type="text" id="descTxt" style="min-width:900px; min-height:200px">
-    </div>
-    <br>
-    <div>
-        <a href="index.html"><button id="btnCancelar">Cancelar</button></a>
-    </div>
+
+    <!-- Scripts -->
+    <script src="js/script-jquery.js"></script>
 </body>
 </html>
