@@ -1,29 +1,13 @@
 let id = 0
 let contPreguntas = 0
+let contRespuestas = 0
 let typePre = ''
 let subPre = ''
 $(document).ready(()=>{
     $("#newQuestion").click(()=>{
         newQuestion()
-    })
-    // $("#newQuestion").click(()=>{            
-    //     id++
-    //     $("#preguntas")
-    //         .append("<div id='pregunta"+id+"'><h2>Pregunta "+id+"</h2><select name='tipoPregunta' id='tipoPregunta"+id+"'><option value='Abierta'>Abierta</option><option value='OpcMultiple'>Opcion multiple</option><option value='Multi'>Multiseleccion</option></select></div><br>")
-    //     typePre = $("#tipoPregunta"+id).attr('id')
-    //     subPre = typePre.substring(12, typePre.length)
-    //     //alert(subPre)        
-    //     agregarDatos($("#tipoPregunta"+id))
-    // })
-
-      
+    })      
 })
-
-// let agregarDatos = (element)=>{
-//     console.log('agrega')
-//     _tipoPregunta = element.val()
-    
-// }              
 
 let onChangeTipo = (elemento) =>{
     let seleccionado = elemento.children("option:selected").val();
@@ -52,11 +36,24 @@ let onChangeTipo = (elemento) =>{
     botonAgr.attr('class', 'agregar')
     botonAgr.text('Agregar opcion')
     
+    let botonAgrMult = $('<button></button>')
+    botonAgrMult.attr('id', 'botonAgrMult'+subPre)
+    botonAgrMult.attr('type', 'button')
+    botonAgrMult.attr('class', 'agregar')
+    botonAgrMult.text('Agregar opcion')
+    
     let botonElim = $('<button></button>')
     botonElim.attr('id', 'botonElim'+subPre)
     botonElim.attr('type', 'button')
     botonElim.attr('class', 'eliminar')
     botonElim.text('Eliminar Pregunta')
+    
+    let botonElimOpc = $('<button></button>')
+    botonElimOpc.attr('id', 'botonElimOpc'+subPre)
+    botonElimOpc.attr('type', 'button')
+    botonElimOpc.attr('disabled', true)
+    botonElimOpc.attr('class', 'eliminarOpc')
+    botonElimOpc.text('Eliminar opcion')
     
     let opcionesCount = 0
     let formOpciones = $('<form></form>')
@@ -64,7 +61,29 @@ let onChangeTipo = (elemento) =>{
     
     
     botonAgr.click(() => {
+        botonElimOpc.attr('disabled', false)
+        contRespuestas++
         opcionesCount++;
+        if(opcionesCount <= 5){
+            let contOpcion = $('<div></div>')
+            contOpcion.attr('id', 'contOpcion'+opcionesCount)
+            
+            let opcion = $('<input></input>')
+            opcion.attr('id', 'opcion'+opcionesCount)
+            opcion.attr('type', 'text')
+            opcion.on('change', ()=>{
+                respuesta(opcion, contOpcion, subPre)
+            })
+                       
+            contOpcion.append(opcion)
+            formOpciones.append(contOpcion)
+        }
+    });
+    
+    botonAgrMult.click(() => {
+        botonElimOpc.attr('disabled', false)
+        opcionesCount++
+        contRespuestas++
         if(opcionesCount <= 5){
             let contOpcion = $('<div></div>')
             contOpcion.attr('id', 'contOpcion'+opcionesCount)
@@ -73,25 +92,18 @@ let onChangeTipo = (elemento) =>{
             opcion.attr('id', 'opcion'+opcionesCount)
             opcion.attr('type', 'text')
             opcion.on('change', ()=>{
-                respuesta(opcion, contOpcion, subPre)
+                respuestaMult(opcion, contOpcion, subPre)
             })
-            
-            // let respuesta = $('<input></input>')
-            // respuesta.attr('id', 'respuesta'+opcionesCount)
-            // respuesta.attr('type', 'radio')
-            // respuesta.attr('name', 'opciones'+subPre)
-            // respuesta.text(opcion.val())
     
             contOpcion.append(opcion)
             formOpciones.append(contOpcion)
-            //formOpciones.append(respuesta)
         }
     });
 
     botonElim.click(()=>{
+        contRespuestas = contRespuestas - opcionesCount
         contPreguntas--
         botonElim.parent().parent().remove()
-        console.log(contPreguntas)
         if(contPreguntas!=0)
             $("#terminar").attr('disabled', false)
         else
@@ -99,8 +111,17 @@ let onChangeTipo = (elemento) =>{
         
     })
 
-    
-
+    botonElimOpc.click(()=>{
+        let getId = botonElimOpc.attr('id')
+        let noPreg = substring(12, getId.length)
+        
+        $("#contOpcion"+opcionesCount).remove()
+        opcionesCount--
+        contRespuestas--
+        if(opcionesCount<=0)
+            botonElimOpc.attr("disabled", true)
+        
+    })
     
     switch(seleccionado){
         case "Abierta":
@@ -112,12 +133,14 @@ let onChangeTipo = (elemento) =>{
             divPregunta.append(formOpciones)
             divPregunta.append(botonAgr)
             divPregunta.append(botonElim)
+            divPregunta.append(botonElimOpc)
             break;
-        case "Multi":
-            labelPregunta.text("Ingresa la pregunta de seleccion multiple:");
-            divPregunta.append(formOpciones)
-            divPregunta.append(botonAgr)
-            divPregunta.append(botonElim)
+            case "Multi":
+                labelPregunta.text("Ingresa la pregunta de seleccion multiple:");
+                divPregunta.append(formOpciones)
+                divPregunta.append(botonAgrMult)
+                divPregunta.append(botonElim)
+                divPregunta.append(botonElimOpc)
             break;
         default:
             break;
@@ -127,16 +150,42 @@ let onChangeTipo = (elemento) =>{
         
 }
 
+
+
 let respuesta=(elemento, elemento2, numPregunta)=>{
     let idElemento = elemento.attr('id');
     let subPre = idElemento.substring(6, idElemento.length)
 
-    console.log(subPre)
     $("#respuesta"+subPre).remove()
     $("#labRespuesta"+subPre).remove()
     let respuesta = $('<input></input>')
-    respuesta.attr('id', 'respuesta'+subPre)
+    respuesta.attr('id', 'respuesta'+numPregunta+'-'+subPre)
+
+    console.log(respuesta.attr('id'))
+    
     respuesta.attr('type', 'radio')
+    respuesta.attr('name', 'opciones'+numPregunta)
+    respuesta.attr('value',elemento.val())
+
+    let labResp = $('<label></label>')
+    labResp.attr('for', 'respuesta'+subPre)
+    labResp.attr('id', 'labRespuesta'+subPre)
+    labResp.text(elemento.val())
+
+    elemento2.append(labResp)
+    elemento2.append(respuesta)
+
+}
+
+let respuestaMult=(elemento, elemento2, numPregunta)=>{
+    let idElemento = elemento.attr('id');
+    let subPre = idElemento.substring(6, idElemento.length)
+
+    $("#respuesta"+subPre).remove()
+    $("#labRespuesta"+subPre).remove()
+    let respuesta = $('<input></input>')
+    respuesta.attr('id', 'respuesta'+numPregunta+'-'+subPre)
+    respuesta.attr('type', 'checkbox')
     respuesta.attr('name', 'opciones'+numPregunta)
     respuesta.attr('value',elemento.val())
 
@@ -188,13 +237,7 @@ let respuesta=(elemento, elemento2, numPregunta)=>{
 
         $('#preguntas').append(divPregunta)
         
-        // typePre = $("#tipoPregunta"+id).attr('id')
-        // subPre = typePre.substring(12, typePre.length)
-        
-        $("#terminar").attr('disabled', false)
-        //alert(subPre)        
-        //agregarDatos($("#tipoPregunta"+id))
-        
+        $("#terminar").attr('disabled', false)        
     }
     
 
@@ -218,13 +261,122 @@ function generarJson(){
                     respuestasTotales = 1
                     respuestasJSON.push({respuesta:"0", opcion_correcta:true})
                 } else {
-
+                    for(let j = 0; j < contRespuestas; j++){
+                        let respuesta = $("opcion")
+                    }
                 }
             }
         }
     }
 }
 
+// function generarJson() {
+
+//         let objJson = [];
+    
+//         let nombreJ = $("#txtSurveyName").val();
+    
+//         let descripcionJ = $("#txtSuveyDescription").val();
+    
+//         let cantidad = $("#questionContainer").find('.card-js').length;
+    
+    
+    
+//         if(nombreJ != '' && descripcionJ != '') {
+    
+//             let preguntasJson = [];
+    
+    
+    
+//             for(let i = 0; i < cantidad; i++) {
+    
+    
+    
+//                 let pregunta = $("#name" + i).val();
+    
+//                 let tipo_pregunta = $("#selector" + i).val();
+    
+//                 let cantidad_respuestas = 0;
+    
+    
+    
+//                 if(pregunta != '' && (tipo_pregunta != 1 || tipo_pregunta != 2 || tipo_pregunta != 3)){
+    
+//                     let respuestasJson = [];
+    
+    
+    
+//                     if(tipo_pregunta == 1) {
+    
+//                         cantidad_respuestas = 1;
+    
+//                         respuestasJson.push({respuesta:"0",opcion_correcta:true});
+    
+//                     }
+    
+//                     else {
+    
+//                         cantidad_respuestas = $("#answerContent" + i).find('.uk-grid').length;
+    
+    
+    
+//                         for(let j = 0; j < cantidad_respuestas; j++){
+    
+//                             let respuesta = $("#answerI"+ i + "-" + j).val();
+    
+//                             let correctaBool = $("#answerC" + i + "-" + j).prop('checked');
+    
+//                             if(respuesta != ''){
+    
+//                                 respuestasJson.push({respuesta:respuesta,opcion_correcta:correctaBool});
+    
+//                             }
+    
+//                             else {
+    
+//                                 alert("Datos Faltantes: Respuesta " + j + " Pregunta: " + i);
+    
+//                                 return null;
+    
+//                             }
+    
+//                         }
+    
+//                     }
+    
+//                     preguntasJson.push({pregunta:pregunta,tipo_pregunta:tipo_pregunta,respuestas:respuestasJson});
+    
+//                 }
+    
+//                 else{
+    
+//                     alert("Datos Faltante: Titulo Pregunta "+ (i + 1) +" / Tipo Respuestas");
+    
+//                     return null;
+    
+//                 }
+    
+//             }
+    
+//             objJson.push({nombre:nombreJ,descripcion:descripcionJ,preguntas:preguntasJson});
+    
+//             console.log("JSON Generado")
+    
+//         }
+    
+//         else{
+    
+//             alert("Datos Faltantes: Nombre o Descripción")
+    
+//             return null;
+    
+//         }
+    
+    
+    
+//         return objJson;
+    
+//     }
 
 let insertar=(json)=>{
     fetch('localhost:3000/cuestionario', {
