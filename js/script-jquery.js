@@ -233,7 +233,11 @@ let respuestaMult=(elemento, elemento2, numPregunta)=>{
 
         $('#preguntas').append(divPregunta)
         
-        $("#terminar").attr('disabled', false)        
+        $("#terminar").attr('disabled', false)      
+        $("#terminar").on('click', ()=>{
+            if(generarJson()!= null)
+                alert('Success!')
+        })      
     }
     
 
@@ -244,7 +248,7 @@ function generarJson(){
     let cantidadPreguntas = contPreguntas
 
     if(nombreSurvey != '' && descripcionSurvey != ''){
-        let preguntas = []
+        let preguntasJSON = []
 
         for(let i = 0; i < cantidadPreguntas; i++){
             let pregunta = $("#pregTxt"+i).val()
@@ -269,9 +273,22 @@ function generarJson(){
                         }
                     }
                 }
-                preguntas.push({pregunta:pregunta})
+
+                preguntasJSON.push({pregunta:pregunta, tipo_pregunta:tipoPregunta, respuestas:respuestasJSON})
+
+            }
+
+            else{
+                alert("Datos faltantes: Descripcion de la pregunta: "+(i+1)+ " / Tipo de respuestas")
+                return null
             }
         }
+        json.push({nombre:nombreSurvey, info:descripcionSurvey, preguntas:preguntasJSON})
+        console.log('Se genero el JSON!')
+    }
+    else{
+        alert("Datos faltantes: Nombre del cuestionario o su descripcion")
+        return null
     }
 }
 
