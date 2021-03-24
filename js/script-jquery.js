@@ -155,8 +155,8 @@ let respuesta=(elemento, elemento2, numPregunta)=>{
     let idElemento = elemento.attr('id');
     let subPre = idElemento.substring(6, idElemento.length)
 
-    $("#respuesta"+subPre).remove()
-    $("#labRespuesta"+subPre).remove()
+    $("#respuesta"+numPregunta+'-'+subPre).remove()
+    $("#labRespuesta"+numPregunta+'-'+subPre).remove()
     let respuesta = $('<input></input>')
     respuesta.attr('id', 'respuesta'+numPregunta+'-'+subPre)
     respuesta.attr('type', 'radio')
@@ -177,8 +177,8 @@ let respuestaMult=(elemento, elemento2, numPregunta)=>{
     let idElemento = elemento.attr('id');
     let subPre = idElemento.substring(6, idElemento.length)
 
-    $("#respuesta"+subPre).remove()
-    $("#labRespuesta"+subPre).remove()
+    $("#respuesta"+numPregunta+'-'+subPre).remove()
+    $("#labRespuesta"+numPregunta+'-'+subPre).remove()
     let respuesta = $('<input></input>')
     respuesta.attr('id', 'respuesta'+numPregunta+'-'+subPre)
     respuesta.attr('type', 'checkbox')
@@ -186,8 +186,8 @@ let respuestaMult=(elemento, elemento2, numPregunta)=>{
     respuesta.attr('value',elemento.val())
 
     let labResp = $('<label></label>')
-    labResp.attr('for', 'respuesta'+subPre)
-    labResp.attr('id', 'labRespuesta'+subPre)
+    labResp.attr('for', 'respuesta'+numPregunta+'-'+subPre)
+    labResp.attr('id', 'labRespuesta'+numPregunta+'-'+subPre)
     labResp.text(elemento.val())
 
     elemento2.append(labResp)
