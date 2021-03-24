@@ -66,7 +66,7 @@ let onChangeTipo = (elemento) =>{
         opcionesCount++;
         if(opcionesCount <= 5){
             let contOpcion = $('<div></div>')
-            contOpcion.attr('id', 'contOpcion'+opcionesCount)
+            contOpcion.attr('id', 'contOpcion'+subPre+'-'+opcionesCount)
             
             let opcion = $('<input></input>')
             opcion.attr('id', 'opcion'+opcionesCount)
@@ -86,7 +86,7 @@ let onChangeTipo = (elemento) =>{
         contRespuestas++
         if(opcionesCount <= 5){
             let contOpcion = $('<div></div>')
-            contOpcion.attr('id', 'contOpcion'+opcionesCount)
+            contOpcion.attr('id', 'contOpcion'+subPre+'-'+opcionesCount)
 
             let opcion = $('<input></input>')
             opcion.attr('id', 'opcion'+opcionesCount)
@@ -113,9 +113,8 @@ let onChangeTipo = (elemento) =>{
 
     botonElimOpc.click(()=>{
         let getId = botonElimOpc.attr('id')
-        let noPreg = substring(12, getId.length)
-        
-        $("#contOpcion"+opcionesCount).remove()
+        let noPreg = getId.substring(12, getId.length)
+        $("#contOpcion"+noPreg+"-"+opcionesCount).remove()
         opcionesCount--
         contRespuestas--
         if(opcionesCount<=0)
@@ -160,16 +159,13 @@ let respuesta=(elemento, elemento2, numPregunta)=>{
     $("#labRespuesta"+subPre).remove()
     let respuesta = $('<input></input>')
     respuesta.attr('id', 'respuesta'+numPregunta+'-'+subPre)
-
-    console.log(respuesta.attr('id'))
-    
     respuesta.attr('type', 'radio')
     respuesta.attr('name', 'opciones'+numPregunta)
     respuesta.attr('value',elemento.val())
 
     let labResp = $('<label></label>')
-    labResp.attr('for', 'respuesta'+subPre)
-    labResp.attr('id', 'labRespuesta'+subPre)
+    labResp.attr('for', 'respuesta'+numPregunta+'-'+subPre)
+    labResp.attr('id', 'labRespuesta'+numPregunta+'-'+subPre)
     labResp.text(elemento.val())
 
     elemento2.append(labResp)
@@ -262,9 +258,18 @@ function generarJson(){
                     respuestasJSON.push({respuesta:"0", opcion_correcta:true})
                 } else {
                     for(let j = 0; j < contRespuestas; j++){
-                        let respuesta = $("opcion")
+                        let respuesta = $("#respuesta"+i+"-"+j).val()
+                        let isCorrect = $("#respuesta"+i+"-"+j).prop('checked')
+                        
+                        if(respuesta != ''){
+                            respuestasJSON.push({respuesta:respuesta, opcion_correcta:isCorrect})
+                        } else {
+                            alert("Hacen falta datos en Respuesta " + j + " Pregunta: " + i)
+                            return null
+                        }
                     }
                 }
+                preguntas.push({pregunta:pregunta})
             }
         }
     }
