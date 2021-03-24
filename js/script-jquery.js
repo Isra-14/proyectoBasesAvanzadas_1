@@ -1,3 +1,4 @@
+let datos = [{}]
 let id = 0
 let contPreguntas = 0
 let contRespuestas = 0
@@ -235,8 +236,9 @@ let respuestaMult=(elemento, elemento2, numPregunta)=>{
         
         $("#terminar").attr('disabled', false)      
         $("#terminar").on('click', ()=>{
-            if(generarJson()!= null)
-                alert('Success!')
+            datos = generarJson()
+            if(datos!=null || datos!='')
+                insertar(datos)
         })      
     }
     
@@ -250,18 +252,21 @@ function generarJson(){
     if(nombreSurvey != '' && descripcionSurvey != ''){
         let preguntasJSON = []
 
-        for(let i = 0; i < cantidadPreguntas; i++){
+        for(let i = 1; i <= cantidadPreguntas; i++){
             let pregunta = $("#pregTxt"+i).val()
             let tipoPregunta = $("#tipoPregunta"+i).val()
             let respuestasTotales = 0
 
-            if(pregunta != '' && (tipoPregunta != 'Abierta' || tipoPregunta != 'Multi' || tipoPregunta != 'OpcMultiple')){
+            if(pregunta != '' && (tipoPregunta != "Abierta" || tipoPregunta != "Multi" || tipoPregunta != "OpcMultiple")){
+                console.log('preguntasTipo...')
                 let respuestasJSON = []
-                if(tipoPregunta == 'Abierta'){
+                if(tipoPregunta == "Abierta"){
                     respuestasTotales = 1
                     respuestasJSON.push({respuesta:"0", opcion_correcta:true})
                 } else {
-                    for(let j = 0; j < contRespuestas; j++){
+                    respuestasTotales = $("#formOpciones"+i).children().length
+                    console.log(respuestasTotales)
+                    for(let j = 1; j <= respuestasTotales; j++){
                         let respuesta = $("#respuesta"+i+"-"+j).val()
                         let isCorrect = $("#respuesta"+i+"-"+j).prop('checked')
                         
@@ -276,132 +281,23 @@ function generarJson(){
 
                 preguntasJSON.push({pregunta:pregunta, tipo_pregunta:tipoPregunta, respuestas:respuestasJSON})
 
-            }
-
-            else{
+            } else{
                 alert("Datos faltantes: Descripcion de la pregunta: "+(i+1)+ " / Tipo de respuestas")
                 return null
             }
         }
         json.push({nombre:nombreSurvey, info:descripcionSurvey, preguntas:preguntasJSON})
-        console.log('Se genero el JSON!')
-    }
-    else{
+    } else {
         alert("Datos faltantes: Nombre del cuestionario o su descripcion")
         return null
     }
+
+    console.log('Se genero el JSON!')
+    return json
 }
 
-// function generarJson() {
-
-//         let objJson = [];
-    
-//         let nombreJ = $("#txtSurveyName").val();
-    
-//         let descripcionJ = $("#txtSuveyDescription").val();
-    
-//         let cantidad = $("#questionContainer").find('.card-js').length;
-    
-    
-    
-//         if(nombreJ != '' && descripcionJ != '') {
-    
-//             let preguntasJson = [];
-    
-    
-    
-//             for(let i = 0; i < cantidad; i++) {
-    
-    
-    
-//                 let pregunta = $("#name" + i).val();
-    
-//                 let tipo_pregunta = $("#selector" + i).val();
-    
-//                 let cantidad_respuestas = 0;
-    
-    
-    
-//                 if(pregunta != '' && (tipo_pregunta != 1 || tipo_pregunta != 2 || tipo_pregunta != 3)){
-    
-//                     let respuestasJson = [];
-    
-    
-    
-//                     if(tipo_pregunta == 1) {
-    
-//                         cantidad_respuestas = 1;
-    
-//                         respuestasJson.push({respuesta:"0",opcion_correcta:true});
-    
-//                     }
-    
-//                     else {
-    
-//                         cantidad_respuestas = $("#answerContent" + i).find('.uk-grid').length;
-    
-    
-    
-//                         for(let j = 0; j < cantidad_respuestas; j++){
-    
-//                             let respuesta = $("#answerI"+ i + "-" + j).val();
-    
-//                             let correctaBool = $("#answerC" + i + "-" + j).prop('checked');
-    
-//                             if(respuesta != ''){
-    
-//                                 respuestasJson.push({respuesta:respuesta,opcion_correcta:correctaBool});
-    
-//                             }
-    
-//                             else {
-    
-//                                 alert("Datos Faltantes: Respuesta " + j + " Pregunta: " + i);
-    
-//                                 return null;
-    
-//                             }
-    
-//                         }
-    
-//                     }
-    
-//                     preguntasJson.push({pregunta:pregunta,tipo_pregunta:tipo_pregunta,respuestas:respuestasJson});
-    
-//                 }
-    
-//                 else{
-    
-//                     alert("Datos Faltante: Titulo Pregunta "+ (i + 1) +" / Tipo Respuestas");
-    
-//                     return null;
-    
-//                 }
-    
-//             }
-    
-//             objJson.push({nombre:nombreJ,descripcion:descripcionJ,preguntas:preguntasJson});
-    
-//             console.log("JSON Generado")
-    
-//         }
-    
-//         else{
-    
-//             alert("Datos Faltantes: Nombre o Descripción")
-    
-//             return null;
-    
-//         }
-    
-    
-    
-//         return objJson;
-    
-//     }
-
 let insertar=(json)=>{
-    fetch('localhost:3000/cuestionario', {
+    fetch('http://localhost:3000/cuestionario', {
         method: 'POST',
         mode: 'cors',
         body: JSON.stringify(json),
