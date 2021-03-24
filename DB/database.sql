@@ -36,6 +36,29 @@ CREATE TABLE Respuestas (
     PRIMARY KEY (idRespuesta)
 );
 
+DROP TABLE IF EXISTS Usuarios;
+CREATE TABLE Usuarios(
+    idUsuario       INT             NOT NULL,
+    nombre          VARCHAR(100)    NOT NULL,
+    contraseña      VARCHAR(50)     NOT NULL,
+
+    PRIMARY KEY (idUsuario)
+
+);
+
+DROP TABLE IF EXISTS RespuestasU;
+CREATE TABLE RespuestasU (
+    idUsuario       INT             NOT NULL,
+    idRespuesta     INT             NOT NULL,
+    numIntento      INT             NOT NULL,
+
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idRespuesta) REFERENCES Respuestas(idRespuesta)
+    PRIMARY KEY(numIntento)
+);
+
+
+
 # Procedimiento para insertar datos en la base
 
 DROP PROCEDURE IF EXISTS guardar_datos;
