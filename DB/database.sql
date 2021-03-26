@@ -33,14 +33,16 @@ CREATE TABLE Respuestas (
     isCorrecta      INT             NOT NULL,
 
     FOREIGN KEY (idPregunta) REFERENCES Preguntas(noPregunta),
+    FOREIGN KEY (idCuestionario) REFERENCES Cuestionario(id),
     PRIMARY KEY (idRespuesta)
 );
 
+
 DROP TABLE IF EXISTS Usuarios;
 CREATE TABLE Usuarios(
-    idUsuario       INT             NOT NULL,
+    idUsuario       INT             NOT NULL AUTO_INCREMENT,
     nombre          VARCHAR(100)    NOT NULL,
-    contraseña      VARCHAR(50)     NOT NULL,
+    contrasenia      VARCHAR(50)     NOT NULL,
 
     PRIMARY KEY (idUsuario)
 
@@ -48,16 +50,26 @@ CREATE TABLE Usuarios(
 
 DROP TABLE IF EXISTS RespuestasU;
 CREATE TABLE RespuestasU (
-    idUsuario       INT             NOT NULL,
+    id              INT             NOT NULL AUTO_INCREMENT,
     idRespuesta     INT             NOT NULL,
-    numIntento      INT             NOT NULL,
+    valorResp       VARCHAR(150)    NOT NULL,
 
-    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
-    FOREIGN KEY (idRespuesta) REFERENCES Respuestas(idRespuesta)
-    PRIMARY KEY(numIntento)
+    FOREIGN KEY (idRespuesta) REFERENCES Respuestas(idRespuesta),
+    PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS UsuarioCuestionario;
+CREATE TABLE UsuarioCuestionario(
+    id                  INT     NOT NULL AUTO_INCREMENT,
+    idUsuario           INT     NOT NULL,
+    idCuestionario      INT     NOT NULL,
+    idRespuestas      INT     NOT NULL,
 
+    FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario),
+    FOREIGN KEY (idCuestionario) REFERENCES Cuestionario(id),
+    FOREIGN KEY (idRespuestas) REFERENCES RespuestasU(id),
+    PRIMARY KEY (id)
+);
 
 # Procedimiento para insertar datos en la base
 

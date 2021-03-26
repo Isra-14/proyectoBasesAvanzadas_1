@@ -63,9 +63,9 @@ let onChangeTipo = (elemento) =>{
     
     botonAgr.click(() => {
         botonElimOpc.attr('disabled', false)
-        contRespuestas++
-        opcionesCount++;
-        if(opcionesCount <= 5){
+        if(opcionesCount < 5){
+            opcionesCount++;
+            contRespuestas++
             let contOpcion = $('<div></div>')
             contOpcion.attr('id', 'contOpcion'+subPre+'-'+opcionesCount)
             
@@ -83,9 +83,9 @@ let onChangeTipo = (elemento) =>{
     
     botonAgrMult.click(() => {
         botonElimOpc.attr('disabled', false)
-        opcionesCount++
-        contRespuestas++
-        if(opcionesCount <= 5){
+        if(opcionesCount < 5){
+            opcionesCount++
+            contRespuestas++
             let contOpcion = $('<div></div>')
             contOpcion.attr('id', 'contOpcion'+subPre+'-'+opcionesCount)
 
@@ -115,6 +115,7 @@ let onChangeTipo = (elemento) =>{
     botonElimOpc.click(()=>{
         let getId = botonElimOpc.attr('id')
         let noPreg = getId.substring(12, getId.length)
+        console.log($("#contOpcion"+noPreg+"-"+opcionesCount))
         $("#contOpcion"+noPreg+"-"+opcionesCount).remove()
         opcionesCount--
         contRespuestas--
